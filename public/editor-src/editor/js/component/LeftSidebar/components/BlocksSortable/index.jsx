@@ -8,8 +8,8 @@ import {
 } from "react-sortable-hoc";
 import { removeAt, insert } from "timm";
 import EditorIcon from "visual/component/EditorIcon";
-import { pageAssembledSelector } from "visual/redux/selectors";
-import { removeBlock, reorderBlocks } from "visual/redux/actions";
+import { pageBlocksAssembledSelector } from "visual/redux/selectors";
+import { removeBlock, reorderBlocks } from "visual/redux/actions2";
 import { t } from "visual/utils/i18n";
 import { IS_GLOBAL_POPUP } from "visual/utils/models";
 import BlockThumbnail from "./BlockThumbnail";
@@ -74,9 +74,9 @@ class DrawerComponent extends React.Component {
       };
     }
 
-    if (props.page.data.items !== state.blocks) {
+    if (props.pageBlocks !== state.blocks) {
       return {
-        blocks: props.page.data.items || []
+        blocks: props.pageBlocks || []
       };
     }
 
@@ -133,7 +133,11 @@ class DrawerComponent extends React.Component {
   };
 
   handleItemRemove = index => {
-    this.props.dispatch(removeBlock({ index }));
+    const {
+      value: { _id }
+    } = this.state.blocks[index];
+
+    this.props.dispatch(removeBlock({ index, id: _id }));
   };
 
   render() {
@@ -158,7 +162,7 @@ class DrawerComponent extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  page: pageAssembledSelector(state)
+  pageBlocks: pageBlocksAssembledSelector(state)
 });
 
 export const BlocksSortable = {

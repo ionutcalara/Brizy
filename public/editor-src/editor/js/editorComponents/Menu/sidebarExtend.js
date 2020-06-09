@@ -1,23 +1,26 @@
 import { t } from "visual/utils/i18n";
+import { toolbarPaddingFourFieldsPxSuffix } from "visual/utils/toolbar";
 
-export function getItems({ v }) {
+export function getItems({ v, device }) {
   return [
     {
       id: "settingsTabs",
-      type: "tabs",
-      align: "start",
+      type: "tabs-dev",
+      config: {
+        align: "start"
+      },
       devices: "desktop",
       tabs: [
         {
           id: "settingsStyling",
           label: t("Styling"),
-          tabIcon: "nc-styling",
+          icon: "nc-styling",
           options: []
         },
         {
           id: "moreSettingsAdvanced",
           label: t("Advanced"),
-          tabIcon: "nc-cog",
+          icon: "nc-cog",
           options: []
         }
       ]
@@ -359,6 +362,14 @@ export function getItems({ v }) {
           }
         ]
       }
-    }
+    },
+    toolbarPaddingFourFieldsPxSuffix({
+      v,
+      device,
+      prefix: "menu",
+      state: "normal",
+      onChangeGrouped: ["onChangePaddingGrouped"],
+      onChangeUngrouped: ["onChangePaddingUngrouped"]
+    })
   ];
 }

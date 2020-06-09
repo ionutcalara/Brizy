@@ -2,18 +2,19 @@ import React from "react";
 import UIState from "visual/global/UIState";
 import EditorComponent from "visual/editorComponents/EditorComponent";
 import EditorArrayComponent from "visual/editorComponents/EditorArrayComponent";
-import { FirstBlockAdder } from "visual/component/BlockAdders";
+import { FirstPopupBlockAdder } from "visual/component/BlockAdders";
 import HotKeys from "visual/component/HotKeys";
 import UIEvents from "visual/global/UIEvents";
 import { getStore } from "visual/redux/store";
 import { triggersAmountSelector } from "visual/redux/selectors";
 import { updateTriggers } from "visual/redux/actions";
-import { addFonts } from "visual/redux/actions2";
+import { addFonts, updateExtraFontStyles } from "visual/redux/actions2";
 // should we move this util folder to another place?
 import { changeValueAfterDND } from "visual/editorComponents/Page/utils";
 import defaultValue from "./defaultValue.json";
 import { uuid } from "visual/utils/uuid";
 import { stripSystemKeys, setIds } from "visual/utils/models";
+import { t } from "visual/utils/i18n";
 
 class PagePopup extends EditorComponent {
   static get componentId() {
@@ -68,21 +69,22 @@ class PagePopup extends EditorComponent {
       },
       tabProps: {
         blocks: {
-          showSidebar: false,
-          showCategories: false,
+          title: t("Popups"),
           showType: false,
-          showSearch: false,
-          type: "popups",
+          type: "conditionPopups",
           onAddBlocks: this.handleBlocksAdd
         },
-
         saved: {
+          title: t("Saved Popups"),
           showSearch: false,
+          type: "conditionPopups",
           blocksFilter: this.blocksFilter,
           onAddBlocks: this.handleBlocksAdd
         },
         global: {
+          title: t("Global Popups"),
           showSearch: false,
+          type: "conditionPopups",
           blocksFilter: this.blocksFilter,
           onAddBlocks: this.handleBlocksAdd
         }
@@ -104,11 +106,15 @@ class PagePopup extends EditorComponent {
     this.props.onChange(newValue);
   };
 
-  handleBlocksAdd = ({ fonts, block }) => {
+  handleBlocksAdd = ({ block, fonts, extraFontStyles = [] }) => {
     const { dispatch } = getStore();
 
     if (fonts) {
       dispatch(addFonts(fonts));
+    }
+
+    if (extraFontStyles.length) {
+      dispatch(updateExtraFontStyles(extraFontStyles));
     }
 
     const itemDataStripped = stripSystemKeys(block);
@@ -143,10 +149,10 @@ class PagePopup extends EditorComponent {
     if (IS_EDITOR && v.items.length === 0) {
       return (
         <React.Fragment>
-          <FirstBlockAdder
+          <FirstPopupBlockAdder
             insertIndex={0}
             promptData={this.getPromptData()}
-            onAddBlocks={this.handleBlocksAdd}
+            onAddBlock={this.handleBlocksAdd}
           />
           <HotKeys
             keyNames={[

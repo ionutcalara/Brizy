@@ -2,7 +2,7 @@ import $ from "jquery";
 import "slick-carousel";
 
 export default function($node) {
-  const isRtl = $node.find("html").attr("dir") === "rtl";
+  const isRtl = $node.closest("[dir='rtl']").length > 0;
   const makeArrow = node => {
     const $svg = $(node)
       .children(".brz-icon-svg")

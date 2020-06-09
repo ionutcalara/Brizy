@@ -8,11 +8,19 @@ import Items from "./items";
 import * as toolbarExtendConfig from "./toolbarExtend";
 import * as sidebarExtendConfig from "./sidebarExtend";
 import classnames from "classnames";
-import { styleContainer, styleItem, styleWrap, style } from "./styles";
+import { validateKeyByProperty } from "visual/utils/onChange";
+import {
+  styleContainer,
+  styleItem,
+  styleWrap,
+  style,
+  styleAnimation
+} from "./styles";
 import { css } from "visual/utils/cssStyle";
 import defaultValue from "./defaultValue.json";
+import { parseCustomAttributes } from "visual/utils/string/parseCustomAttributes";
 
-class Cloneable extends EditorComponent {
+export default class Cloneable extends EditorComponent {
   static get componentId() {
     return "Cloneable";
   }
@@ -25,6 +33,8 @@ class Cloneable extends EditorComponent {
   };
 
   static defaultValue = defaultValue;
+
+  static experimentalDynamicContent = true;
 
   containerBorder = React.createRef();
 
@@ -69,6 +79,9 @@ class Cloneable extends EditorComponent {
       paddingRight,
       paddingRightSuffix,
 
+      // Align
+      horizontalAlign,
+
       // Tablet Padding
       tabletPadding,
       tabletPaddingType,
@@ -87,6 +100,9 @@ class Cloneable extends EditorComponent {
       tabletMarginRight,
       tabletMarginRightSuffix,
 
+      // Tablet align
+      tabletHorizontalAlign,
+
       // Mobile Padding
       mobilePadding,
       mobilePaddingType,
@@ -103,7 +119,10 @@ class Cloneable extends EditorComponent {
       mobileMarginLeft,
       mobileMarginLeftSuffix,
       mobileMarginRight,
-      mobileMarginRightSuffix
+      mobileMarginRightSuffix,
+
+      // Mobile align
+      mobileHorizontalAlign
     } = v;
 
     const marginW =
@@ -195,6 +214,9 @@ class Cloneable extends EditorComponent {
       mobileW,
       tabletW,
       desktopW,
+      horizontalAlign,
+      tabletHorizontalAlign,
+      mobileHorizontalAlign,
       inCloneable: true
     });
   }
@@ -258,14 +280,21 @@ class Cloneable extends EditorComponent {
   renderForEdit(v, vs, vd) {
     const { showBorder, propsClassName } = this.props;
     const {
-      animationName,
-      animationDuration,
-      animationDelay,
       customClassName,
       customID,
       cssIDPopulation,
-      cssClassPopulation
+      cssClassPopulation,
+      customAttributes
     } = v;
+
+    const animationClassName = classnames(
+      validateKeyByProperty(v, "animationName", "none") &&
+        css(
+          `${this.constructor.componentId}-wrapper-animation,`,
+          `${this.getId()}-animation`,
+          styleAnimation(v, vs, vd)
+        )
+    );
 
     const className = classnames(
       "brz-wrapper-clone",
@@ -278,13 +307,17 @@ class Cloneable extends EditorComponent {
       propsClassName
     );
 
+    const props = {
+      ...parseCustomAttributes(customAttributes),
+      id: cssIDPopulation === "" ? customID : cssIDPopulation,
+      className
+    };
+
     return (
       <Animation
-        className={className}
-        customID={cssIDPopulation === "" ? customID : cssIDPopulation}
-        name={animationName !== "none" && animationName}
-        duration={animationDuration}
-        delay={animationDelay}
+        component={"div"}
+        componentProps={props}
+        animationClass={animationClassName}
       >
         {showBorder ? (
           <ContainerBorder
@@ -303,16 +336,23 @@ class Cloneable extends EditorComponent {
 
   renderForView(v, vs, vd) {
     const {
-      animationName,
-      animationDuration,
-      animationDelay,
       customClassName,
       customID,
       cssIDPopulation,
-      cssClassPopulation
+      cssClassPopulation,
+      customAttributes
     } = v;
 
     const { propsClassName } = this.props;
+
+    const animationClassName = classnames(
+      validateKeyByProperty(v, "animationName", "none") &&
+        css(
+          `${this.constructor.componentId}-wrapper-animation,`,
+          `${this.getId()}-animation`,
+          styleAnimation(v, vs, vd)
+        )
+    );
 
     const className = classnames(
       "brz-wrapper-clone",
@@ -325,18 +365,20 @@ class Cloneable extends EditorComponent {
       propsClassName
     );
 
+    const props = {
+      ...parseCustomAttributes(customAttributes),
+      id: cssIDPopulation === "" ? customID : cssIDPopulation,
+      className
+    };
+
     return (
       <Animation
-        className={className}
-        customID={cssIDPopulation === "" ? customID : cssIDPopulation}
-        name={animationName !== "none" && animationName}
-        duration={animationDuration}
-        delay={animationDelay}
+        component={"div"}
+        componentProps={props}
+        animationClass={animationClassName}
       >
         {this.renderContent(v, vs, vd)}
       </Animation>
     );
   }
 }
-
-export default Cloneable;

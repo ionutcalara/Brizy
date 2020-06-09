@@ -1,0 +1,44 @@
+{
+  "content": {
+    "day": "Monday - Friday",
+    "time": "10:00AM - 07:00PM"
+  },
+
+  "toolbar": {
+    "tabsState": "",
+    "tabsCurrentElement": "",
+    "tabsColor": ""
+  },
+
+  "style": {
+    "className": "",
+
+    "bgColorType": "solid",
+
+    "bgColorHex": "#000000",
+    "bgColorOpacity": 0.75,
+    "bgColorPalette": "color8",
+
+    "tempBgColorOpacity": 0.75,
+    "tempBgColorPalette": "color8",
+
+    "hoverBgColorType": null,
+
+    "hoverBgColorHex": null,
+    "hoverBgColorOpacity": null,
+    "hoverBgColorPalette": null,
+
+    "tempHoverBgColorOpacity": null,
+    "tempHoverBgColorPalette": null,
+
+    "titleHorizontalAlign": "left",
+
+    "customCSS": "",
+
+    "hoverTransition": 50,
+
+    "tabletTitleHorizontalAlign": null,
+
+    "mobileTitleHorizontalAlign": null
+  }
+}

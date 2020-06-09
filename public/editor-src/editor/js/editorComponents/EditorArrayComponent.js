@@ -10,6 +10,7 @@ import {
 } from "visual/redux/selectors";
 import { updateCopiedElement } from "visual/redux/actions";
 import EditorComponent from "./EditorComponent";
+import ErrorBoundary from "visual/component/ErrorBoundary";
 import {
   stripSystemKeys,
   setIds,
@@ -248,12 +249,16 @@ export default class EditorArrayComponent extends EditorComponent {
     const itemOnChange = (itemValue, meta = {}) => {
       const { intent } = meta;
 
-      if (intent === "replace_all") {
-        this.replaceItem(itemIndex, itemValue, meta);
-      } else {
-        if (itemValue === null) {
+      switch (intent) {
+        case "replace_all": {
+          this.replaceItem(itemIndex, itemValue, meta);
+          break;
+        }
+        case "remove_all": {
           this.removeItem(itemIndex, meta);
-        } else {
+          break;
+        }
+        default: {
           this.updateItem(itemIndex, itemValue, meta);
         }
       }
@@ -261,16 +266,20 @@ export default class EditorArrayComponent extends EditorComponent {
 
     if (ItemComponent) {
       return (
-        <ItemComponent
-          {...itemProps}
+        <ErrorBoundary
           key={itemKey}
-          path={itemPath}
-          defaultValue={itemDefaultValue}
-          dbValue={itemDBValue}
-          reduxState={this.getReduxState()}
-          reduxDispatch={this.getReduxDispatch()}
-          onChange={itemOnChange}
-        />
+          onRemove={() => this.removeItem(itemIndex)}
+        >
+          <ItemComponent
+            {...itemProps}
+            path={itemPath}
+            defaultValue={itemDefaultValue}
+            dbValue={itemDBValue}
+            reduxState={this.getReduxState()}
+            reduxDispatch={this.getReduxDispatch()}
+            onChange={itemOnChange}
+          />
+        </ErrorBoundary>
       );
     } else {
       const NotFoundComponent = Editor.getNotFoundComponent();

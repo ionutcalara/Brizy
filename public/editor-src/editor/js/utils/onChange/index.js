@@ -92,9 +92,7 @@ export {
 } from "./onChangeMargin";
 
 // Element Section
-export {
-  onChangeElementSectionBoxShadowHexAndOpacityDependencies
-} from "./onChangeElementSection";
+export { onChangeElementSectionBoxShadowHexAndOpacityDependencies } from "./onChangeElementSection";
 
 // Element Progress Bar
 export {
@@ -197,7 +195,8 @@ export {
 export {
   tabletSyncOnChange,
   mobileSyncOnChange,
-  keySyncOnChange
+  keySyncOnChange,
+  validateKeyByProperty
 } from "./device";
 
 // Typography

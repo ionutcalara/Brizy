@@ -1,0 +1,199 @@
+{
+  "content": {
+    "items": [],
+    "rows": 9,
+    "columns": 2
+  },
+
+  "style": {
+    "tableHead": "on",
+    "tableAside": "on",
+
+    "width": 100,
+    "widthSuffix": null,
+    "asideWidth": 288,
+    "asideWidthSuffix": null,
+
+    "className": "",
+    "customCSS": "",
+
+    "families": {
+      "typographyFontFamily": "lato",
+      "tabletTypographyFontFamily": null,
+      "mobileTypographyFontFamily": null
+    },
+
+    "typographyFontStyle": "",
+    "typographyFontFamilyType": "google",
+    "typographyFontSize": 16,
+    "typographyFontWeight": 400,
+    "typographyLineHeight": 1.5,
+    "typographyLetterSpacing": 0,
+
+    "bgColorType": "solid",
+
+    "bgColorHex": "#ffffff",
+    "bgColorOpacity": 1,
+    "bgColorPalette": "",
+
+    "tempBgColorOpacity": 1,
+    "tempBgColorPalette": "",
+
+    "activeBgColorHex": "#f9f9f9",
+    "activeBgColorOpacity": 1,
+    "activeBgColorPalette": "",
+
+    "tempActiveBgColorOpacity": 1,
+    "tempActiveBgColorPalette": "",
+
+    "borderColorHex": "#dcdee1",
+    "borderColorOpacity": 0.11,
+    "borderColorPalette": "",
+
+    "tempBorderColorOpacity": 0.11,
+    "tempBorderColorPalette": "",
+
+    "borderStyle": "solid",
+
+    "tempBorderStyle": "solid",
+
+    "borderWidthType": "grouped",
+    "borderWidth": 1,
+    "borderTopWidth": 1,
+    "borderRightWidth": 1,
+    "borderBottomWidth": 1,
+    "borderLeftWidth": 1,
+
+    "tempBorderWidth": 1,
+    "tempBorderTopWidth": 1,
+    "tempBorderRightWidth": 1,
+    "tempBorderBottomWidth": 1,
+    "tempBorderLeftWidth": 1,
+
+    "boxShadow": "",
+
+    "tempBoxShadow": "on",
+
+    "boxShadowColorHex": "#000000",
+    "boxShadowColorOpacity": 0.1,
+    "boxShadowColorPalette": "",
+
+    "tempBoxShadowColorOpacity": 0.1,
+    "tempBoxShadowColorPalette": "",
+
+    "boxShadowBlur": 0,
+    "boxShadowSpread": 0,
+    "boxShadowVertical": 0,
+    "boxShadowHorizontal": 0,
+
+    "tempBoxShadowBlur": 4,
+    "tempBoxShadowSpread": 0,
+    "tempBoxShadowVertical": 2,
+    "tempBoxShadowHorizontal": 1,
+
+    "paddingType": "ungrouped",
+    "tempPaddingType": "ungrouped",
+
+    "padding": 0,
+    "paddingTop": 0,
+    "paddingRight": 0,
+    "paddingBottom": 0,
+    "paddingLeft": 20,
+
+    "tempPadding": 0,
+    "tempPaddingTop": 0,
+    "tempPaddingRight": 0,
+    "tempPaddingBottom": 0,
+    "tempPaddingLeft": 20,
+
+    "paddingSuffix": "px",
+    "paddingTopSuffix": "px",
+    "paddingRightSuffix": "px",
+    "paddingBottomSuffix": "px",
+    "paddingLeftSuffix": "px",
+
+    "tempPaddingSuffix": "px",
+    "tempPaddingTopSuffix": "px",
+    "tempPaddingRightSuffix": "px",
+    "tempPaddingBottomSuffix": "px",
+    "tempPaddingLeftSuffix": "px",
+
+    "tabletWidth": null,
+    "tabletWidthSuffix": null,
+    "tabletAsideWidth": null,
+    "tabletAsideWidthSuffix": null,
+
+    "tabletTypographyFontStyle": "",
+    "tabletTypographyFontFamilyType": null,
+    "tabletTypographyFontSize": null,
+    "tabletTypographyLineHeight": null,
+    "tabletTypographyLetterSpacing": null,
+    "tabletTypographyFontWeight": null,
+
+    "tabletPaddingType": "ungrouped",
+    "tempTabletPaddingType": "ungrouped",
+
+    "tabletPadding": 0,
+    "tabletPaddingTop": 0,
+    "tabletPaddingRight": 10,
+    "tabletPaddingBottom": 0,
+    "tabletPaddingLeft": 10,
+
+    "tempTabletPadding": 0,
+    "tempTabletPaddingTop": 0,
+    "tempTabletPaddingRight": 10,
+    "tempTabletPaddingBottom": 0,
+    "tempTabletPaddingLeft": 10,
+
+    "tabletPaddingSuffix": "px",
+    "tabletPaddingTopSuffix": "px",
+    "tabletPaddingRightSuffix": "px",
+    "tabletPaddingBottomSuffix": "px",
+    "tabletPaddingLeftSuffix": "px",
+
+    "tempTabletPaddingSuffix": "px",
+    "tempTabletPaddingTopSuffix": "px",
+    "tempTabletPaddingRightSuffix": "px",
+    "tempTabletPaddingBottomSuffix": "px",
+    "tempTabletPaddingLeftSuffix": "px",
+
+    "mobileTypographyFontStyle": "",
+    "mobileTypographyFontFamilyType": null,
+    "mobileTypographyFontSize": null,
+    "mobileTypographyLineHeight": null,
+    "mobileTypographyLetterSpacing": null,
+    "mobileTypographyFontWeight": null,
+
+    "mobileWidth": null,
+    "mobileWidthSuffix": null,
+    "mobileAsideWidth": null,
+    "mobileAsideWidthSuffix": null,
+
+    "mobilePaddingType": "ungrouped",
+    "tempMobilePaddingType": "ungrouped",
+
+    "mobilePadding": 0,
+    "mobilePaddingTop": 0,
+    "mobilePaddingRight": 10,
+    "mobilePaddingBottom": 0,
+    "mobilePaddingLeft": 10,
+
+    "tempMobilePadding": 0,
+    "tempMobilePaddingTop": 0,
+    "tempMobilePaddingRight": 10,
+    "tempMobilePaddingBottom": 0,
+    "tempMobilePaddingLeft": 10,
+
+    "mobilePaddingSuffix": "px",
+    "mobilePaddingTopSuffix": "px",
+    "mobilePaddingRightSuffix": "px",
+    "mobilePaddingBottomSuffix": "px",
+    "mobilePaddingLeftSuffix": "px",
+
+    "tempMobilePaddingSuffix": "px",
+    "tempMobilePaddingTopSuffix": "px",
+    "tempMobilePaddingRightSuffix": "px",
+    "tempMobilePaddingBottomSuffix": "px",
+    "tempMobilePaddingLeftSuffix": "px"
+  }
+}

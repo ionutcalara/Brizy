@@ -1,0 +1,36 @@
+{
+  "style": {
+    "items": "",
+
+    "className": "",
+
+    "width": 400,
+    "widthSuffix": 400,
+
+    "height": 400,
+    "heightSuffix": 400,
+
+    "animationLink": "https://assets6.lottiefiles.com/private_files/lf30_1KyL2Q.json",
+
+    "speed": 1,
+    "speedSuffix": null,
+
+    "loop": "on",
+    "autoplay": "on",
+    "direction": 1,
+
+    "customCSS": "",
+
+    "tabletWidth": null,
+    "tabletWidthSuffix": null,
+
+    "tabletHeight": null,
+    "tabletHeightSuffix": null,
+
+    "mobileWidth": null,
+    "mobileWidthSuffix": null,
+
+    "mobileHeight": null,
+    "mobileHeightSuffix": null
+  }
+}

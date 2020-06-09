@@ -12,8 +12,7 @@ import {
   pageBlocksAssembledSelector,
   globalBlocksAssembled2Selector
 } from "visual/redux/selectors";
-import { updateBlocks } from "visual/redux/actions";
-import { updateGlobalBlock } from "visual/redux/actions2";
+import { updateGlobalBlock, updateBlocks } from "visual/redux/actions2";
 import { t } from "visual/utils/i18n";
 
 const MAX_THUMBNAIL_WIDTH = 132;
@@ -56,7 +55,7 @@ class BlockThumbnail extends React.Component {
         .filter(block => block.value._id !== id)
         .map(block => {
           if (block.type === "GlobalBlock") {
-            block = globalBlocks[block.value.globalBlockId].data;
+            block = globalBlocks[block.value._id].data;
           }
 
           return block.value.anchorName;
@@ -78,7 +77,7 @@ class BlockThumbnail extends React.Component {
 
     const blockToUpdate = blocks.find(({ type, value }) => {
       if (type === "GlobalBlock") {
-        return globalBlocks[value.globalBlockId].data.value._id === id;
+        return globalBlocks[value._id].data.value._id === id;
       }
 
       return value._id === id;
@@ -98,8 +97,8 @@ class BlockThumbnail extends React.Component {
 
       dispatch(updateBlocks({ blocks: updatedBlocks }));
     } else {
-      const globalBlockId = blockToUpdate.value.globalBlockId;
-      const globalBlock = produce(globalBlocks[globalBlockId], draft => {
+      const _id = blockToUpdate.value._id;
+      const globalBlock = produce(globalBlocks[_id], draft => {
         draft.data.value.anchorName = anchorName;
       });
 
@@ -137,7 +136,7 @@ class BlockThumbnail extends React.Component {
 
     return blocks.map(block => {
       if (block.type === "GlobalBlock") {
-        block = globalBlocks[block.value.globalBlockId].data;
+        block = globalBlocks[block.value._id].data;
       }
 
       const { _id, anchorName } = block.value;

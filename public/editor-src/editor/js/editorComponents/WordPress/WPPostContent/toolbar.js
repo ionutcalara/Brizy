@@ -8,23 +8,25 @@ export function getItems({ v, device }) {
   const dvv = key => defaultValueValue({ v, key, device, state: "normal" });
 
   const { hex: colorHex } = getOptionColorHexByPalette(
-    dvv("colorHex"),
-    dvv("colorPalette")
+    dvv("paragraphColorHex"),
+    dvv("paragraphColorPalette")
   );
 
   return [
     {
-      id: dvk("toolbarTypography"),
-      type: "popover",
-      icon: "nc-font",
-      size: device === "desktop" ? "large" : "auto",
-      title: t("Typography"),
+      id: "toolbarTypography",
+      type: "popover-dev",
+      config: {
+        icon: "nc-font",
+        size: device === "desktop" ? "large" : "auto",
+        title: t("Typography")
+      },
       roles: ["admin"],
       position: 70,
       options: [
         {
-          id: dvk("tabsTypography"),
-          type: "tabs",
+          id: "tabsTypography",
+          type: "tabs-dev",
           tabs: [
             {
               id: dvk("tabTypographyParagraph"),
@@ -122,23 +124,24 @@ export function getItems({ v, device }) {
       ]
     },
     {
-      id: dvk("toolbarColor"),
-      type: "popover",
-      size: "auto",
-      title: t("Colors"),
+      id: "toolbarColor",
+      type: "popover-dev",
+      config: {
+        size: "auto",
+        title: t("Colors"),
+        icon: {
+          style: {
+            backgroundColor: hexToRgba(colorHex, v.colorOpacity)
+          }
+        }
+      },
       roles: ["admin"],
       devices: "desktop",
       position: 90,
-      icon: {
-        style: {
-          backgroundColor: hexToRgba(colorHex, v.colorOpacity)
-        }
-      },
       options: [
         {
           id: "tabsColor",
-          type: "tabs",
-          value: v.tabsColor,
+          type: "tabs-dev",
           tabs: [
             {
               id: "tabParagraph",

@@ -1,7 +1,8 @@
 import React, { Component, ReactElement } from "react";
 import { t } from "visual/utils/i18n";
 import Smtp from "./common/Smtp";
-import { Context, ContextIntegration } from "../../common/GlobalApps/Context";
+import { Context } from "../../common/GlobalApps/Context";
+import { BaseIntegrationContext } from "../../common/GlobalApps/type";
 
 const apiKeys = [
   {
@@ -12,15 +13,14 @@ const apiKeys = [
              <p class="brz-p"><span class="brz-span">me@email.com,</span> <span class="brz-span">hi@email.com</span></p>`
   },
   { name: "subject", title: t("Subject") },
-  { name: "fromName", title: t("From Name") },
-  { name: "replyTo", title: t("Reply-To") }
+  { name: "fromName", title: t("From Name") }
 ];
 
 type Props = {
   onClose: () => void;
 };
 
-class EmailFields extends Component<Props, {}, ContextIntegration> {
+class EmailFields extends Component<Props, {}, BaseIntegrationContext> {
   static contextType = Context;
 
   render(): ReactElement {

@@ -1,8 +1,7 @@
 import {
   ProjectError,
   PageError,
-  GlobalBlocksError,
-  SavedBlocksError
+  GlobalBlocksError
 } from "visual/utils/errors";
 
 // project
@@ -58,6 +57,7 @@ export const stringifyPage = page => {
 
 export const parseGlobalBlock = globalBlock => {
   let data;
+  let meta;
 
   if (!globalBlock.data) {
     throw new GlobalBlocksError("globalBlock data should exist");
@@ -71,36 +71,23 @@ export const parseGlobalBlock = globalBlock => {
     }
   }
 
-  return { ...globalBlock, data };
-};
-
-export const stringifyGlobalBlock = globalBlock => {
-  let data = JSON.stringify(globalBlock.data);
-
-  return { ...globalBlock, data };
-};
-
-// saved blocks
-export const parseSavedBlock = savedBlock => {
-  let data;
-
-  if (!savedBlock.data) {
-    throw new SavedBlocksError("savedBlock data should exist");
+  if (!globalBlock.meta) {
+    meta = {};
   } else {
     try {
-      data = JSON.parse(savedBlock.data);
+      meta = JSON.parse(globalBlock.meta);
     } catch (e) {
-      throw new SavedBlocksError(
-        `Failed to parse savedBlock data ${savedBlock.data}`
-      );
+      meta = {};
     }
   }
 
-  return { ...savedBlock, data };
+  return { ...globalBlock, data, meta };
 };
 
-export const stringifySavedBlock = savedBlock => {
-  let data = JSON.stringify(savedBlock.data);
+export const stringifyGlobalBlock = globalBlock => {
+  const data = JSON.stringify(globalBlock.data);
+  const meta = JSON.stringify(globalBlock.meta);
+  const rules = JSON.stringify(globalBlock.rules);
 
-  return { ...savedBlock, data };
+  return { ...globalBlock, data, meta, rules };
 };

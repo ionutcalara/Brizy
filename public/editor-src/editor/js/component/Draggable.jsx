@@ -1,6 +1,8 @@
 import React from "react";
-import classnames from "classnames";
+import classNames from "classnames";
 import _ from "underscore";
+import T from "prop-types";
+import $ from "jquery";
 
 const getClientOffset = event => ({
   x: event.clientX,
@@ -8,6 +10,17 @@ const getClientOffset = event => ({
 });
 
 class Draggable extends React.Component {
+  static propTypes = {
+    className: T.string,
+    style: T.object,
+    draggingCursor: T.string,
+    renderPopover: T.func,
+    onDragStart: T.func,
+    onDrag: T.func,
+    onDragEnd: T.func,
+    exceptions: T.arrayOf(T.string)
+  };
+
   static defaultProps = {
     className: "",
     style: {},
@@ -31,7 +44,7 @@ class Draggable extends React.Component {
   lastDelta = null;
 
   componentWillUnmount() {
-    this.cleanMouseEvents();
+    this.clearDragData();
   }
 
   handleClick = e => {
@@ -39,11 +52,24 @@ class Draggable extends React.Component {
   };
 
   handleMouseDown = e => {
+    const exceptions = this.props.exceptions ?? [];
+    if (
+      exceptions.length &&
+      $(e.target).closest(exceptions.join(", ")).length
+    ) {
+      return;
+    }
+
+    e.stopPropagation();
     // left click only
     if (e.button !== 0) {
       return;
     }
 
+    this.initMouseEvents();
+  };
+
+  startDrag = client => {
     const { draggingCursor, onDragStart } = this.props;
 
     const overlayNode = document.querySelector(".brz-root__container-after");
@@ -55,7 +81,7 @@ class Draggable extends React.Component {
     global.BRZ_IS_DRAGGING = true;
 
     this.isMouseDown = true;
-    this.currentPosition = this.startPosition = getClientOffset(e);
+    this.currentPosition = this.startPosition = client;
 
     window.parent.document.body.classList.add("brz-pointer-events-none");
     onDragStart();
@@ -67,11 +93,34 @@ class Draggable extends React.Component {
   };
 
   handleMouseMove = e => {
-    this.currentPosition = getClientOffset(e);
+    if (!this.isMouseDown) {
+      this.startDrag(getClientOffset(e));
+    } else {
+      this.currentPosition = getClientOffset(e);
+    }
   };
 
   handleMouseUp = () => {
-    const { draggingCursor, onDragEnd } = this.props;
+    this.clearDragData();
+
+    if (!this.isMouseDown) {
+      const { onDragEnd } = this.props;
+      onDragEnd();
+
+      this.setState({
+        isDragging: false
+      });
+    }
+  };
+
+  clearDragData = () => {
+    this.cleanMouseEvents();
+
+    if (!this.isMouseDown) {
+      return;
+    }
+
+    const { draggingCursor } = this.props;
 
     const overlayNode = document.querySelector(".brz-root__container-after");
     overlayNode.style.pointerEvents = "none";
@@ -86,12 +135,12 @@ class Draggable extends React.Component {
     this.lastDelta = null;
 
     window.parent.document.body.classList.remove("brz-pointer-events-none");
-    this.cleanMouseEvents();
-    onDragEnd();
+  };
 
-    this.setState({
-      isDragging: false
-    });
+  onMouseUp = () => {
+    if (!this.isMouseDown) {
+      this.clearDragData();
+    }
   };
 
   update = () => {
@@ -128,7 +177,7 @@ class Draggable extends React.Component {
   render() {
     const { className: _className, style = null, renderPopover } = this.props;
     const { isDragging } = this.state;
-    const className = classnames(
+    const className = classNames(
       "brz-ed-draggable",
       "brz-ed-dd-cancel",
       _className
@@ -139,6 +188,7 @@ class Draggable extends React.Component {
         className={className}
         style={style}
         onMouseDown={this.handleMouseDown}
+        onMouseUp={this.onMouseUp}
         onClick={this.handleClick}
       >
         {this.props.children}

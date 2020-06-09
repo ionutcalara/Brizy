@@ -10,9 +10,10 @@ import {
   toolbarBorder2,
   toolbarBorderColorHexField2
 } from "visual/utils/toolbar";
-import { defaultValueValue, defaultValueKey } from "visual/utils/onChange";
+import { defaultValueValue } from "visual/utils/onChange";
 import { getOptionColorHexByPalette } from "visual/utils/options";
 import { DESKTOP } from "visual/utils/responsiveMode";
+import { NORMAL, HOVER } from "visual/utils/stateMode";
 import { t } from "visual/utils/i18n";
 
 export function getItems({ v, device, state }) {
@@ -22,120 +23,114 @@ export function getItems({ v, device, state }) {
 }
 
 export function getItemsSimple({ v, device, state }) {
-  const dvk = key => defaultValueKey({ key, device });
   const dvv = key => defaultValueValue({ v, key, device, state });
-
   const { hex: colorHex } = getOptionColorHexByPalette(
-    dvk("colorHex"),
+    dvv("colorHex"),
     dvv("colorPalette")
   );
   const { hex: subMenuColorHex } = getOptionColorHexByPalette(
-    defaultValueValue({ v, key: "subMenuColorHex", device }),
-    defaultValueValue({ v, key: "subMenuColorPalette", device })
+    dvv("subMenuColorHex"),
+    dvv("subMenuColorPalette")
   );
 
   return [
     {
+      id: "toolbarMenuSettings",
+      type: "popover-dev",
+      config: {
+        icon: "nc-menu-3",
+        title: t("Menu")
+      },
+      position: 10,
+      options: [
+        {
+          id: "menuSize",
+          type: "slider-dev",
+          label: t("Size"),
+          position: 20,
+          disabled: dvv("verticalMode") === "horizontal",
+          config: {
+            min: 10,
+            max: 100,
+            units: [
+              {
+                title: "%",
+                value: "%"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
       id: "toolbarMenuItem",
-      type: "popover",
-      icon: "nc-star",
-      title: t("Icon"),
+      type: "popover-dev",
+      config: {
+        icon: "nc-star",
+        title: t("Icon")
+      },
       position: 20,
       options: [
         {
-          id: dvk("iconSize"),
-          type: "slider",
+          id: "iconSize",
+          type: "slider-dev",
           label: t("Size"),
-          roles: ["admin"],
           position: 20,
-          slider: {
+          config: {
             min: 0,
-            max: 100
-          },
-          input: {
-            show: true
-          },
-          suffix: {
-            show: true,
-            choices: [
+            max: 100,
+            units: [
               {
                 title: "px",
                 value: "px"
               }
             ]
-          },
-          value: {
-            value: dvv("iconSize")
-          },
-          onChange: ({ value }) => ({
-            [dvk("iconSize")]: value
-          })
+          }
         },
         {
           id: "iconSpacing",
-          type: "slider",
+          type: "slider-dev",
           devices: "desktop",
           label: t("Spacing"),
           roles: ["admin"],
           position: 30,
-          slider: {
+          config: {
             min: 0,
-            max: 100
-          },
-          input: {
-            show: true
-          },
-          suffix: {
-            show: true,
-            choices: [
+            max: 100,
+            units: [
               {
                 title: "px",
                 value: "px"
               }
             ]
-          },
-          value: {
-            value: dvv("iconSpacing")
-          },
-          onChange: ({ value }) => ({
-            [dvk("iconSpacing")]: value
-          })
+          }
         }
       ]
     },
     {
       id: "subMenuToolbarMenuItem",
-      type: "popover",
-      icon: "nc-star",
-      title: t("Icon"),
+      type: "popover-dev",
+      config: {
+        icon: "nc-star",
+        title: t("Icon")
+      },
       position: 20,
       options: [
         {
           id: "subMenuIconSize",
-          type: "slider",
+          type: "slider-dev",
           label: t("Size"),
-          roles: ["admin"],
           position: 20,
-          slider: {
+          config: {
             min: 0,
-            max: 100
-          },
-          input: {
-            show: true
-          },
-          suffix: {
-            show: true,
-            choices: [
+            max: 100,
+            units: [
               {
                 title: "px",
                 value: "px"
               }
             ]
-          },
-          value: {
-            value: v.subMenuIconSize
-          },
-          onChange: ({ value: subMenuIconSize }) => ({ subMenuIconSize })
+          }
         },
         {
           id: "subMenuIconSpacing",
@@ -176,10 +171,12 @@ export function getItemsSimple({ v, device, state }) {
     },
     {
       id: "toolbarTypography",
-      type: "popover",
-      icon: "nc-font",
-      size: device === DESKTOP ? "large" : "auto",
-      title: t("Typography"),
+      type: "popover-dev",
+      config: {
+        icon: "nc-font",
+        size: device === DESKTOP ? "large" : "auto",
+        title: t("Typography")
+      },
       roles: ["admin"],
       position: 70,
       options: [
@@ -194,10 +191,12 @@ export function getItemsSimple({ v, device, state }) {
     },
     {
       id: "subMenuToolbarTypography",
-      type: "popover",
-      icon: "nc-font",
-      size: device === DESKTOP ? "large" : "auto",
-      title: t("Typography"),
+      type: "popover-dev",
+      config: {
+        icon: "nc-font",
+        size: device === DESKTOP ? "large" : "auto",
+        title: t("Typography")
+      },
       roles: ["admin"],
       position: 70,
       options: [
@@ -212,33 +211,39 @@ export function getItemsSimple({ v, device, state }) {
     },
     {
       id: "toolbarColor",
-      type: "popover",
-      devices: "desktop",
-      size: "auto",
-      title: t("Colors"),
-      position: 80,
-      icon: {
-        style: {
-          backgroundColor: hexToRgba(colorHex, v.colorOpacity)
+      type: "popover-dev",
+      config: {
+        size: "auto",
+        title: t("Colors"),
+        icon: {
+          style: {
+            backgroundColor: hexToRgba(colorHex, v.colorOpacity)
+          }
         }
       },
+      devices: "desktop",
+      position: 80,
       roles: ["admin"],
       options: [
         {
           id: "color",
-          tabsPosition: "left",
-          type: "tabs",
+          type: "tabs-dev",
+          config: {
+            position: "left"
+          },
           tabs: [
             {
-              tabIcon: "nc-circle",
+              id: "tabNormal",
+              icon: "nc-circle",
               title: t("Normal"),
               options: [
                 {
                   id: "colorTabs",
                   className: "",
-                  type: "tabs",
+                  type: "tabs-dev",
                   tabs: [
                     {
+                      id: "text",
                       label: t("Text"),
                       options: [
                         toolbarColor2({
@@ -266,21 +271,45 @@ export function getItemsSimple({ v, device, state }) {
                           ]
                         }
                       ]
+                    },
+                    {
+                      id: "bg",
+                      label: t("Bg"),
+                      options: [
+                        {
+                          id: "menuBgColor",
+                          type: "colorPicker-dev",
+                          states: [NORMAL, HOVER]
+                        }
+                      ]
+                    },
+                    {
+                      id: "border",
+                      label: t("Border"),
+                      options: [
+                        {
+                          id: "menuBorder",
+                          type: "border-dev",
+                          states: [NORMAL, HOVER]
+                        }
+                      ]
                     }
                   ]
                 }
               ]
             },
             {
-              tabIcon: "nc-hover",
+              id: "tabHover",
+              icon: "nc-hover",
               title: t("Hover"),
               options: [
                 {
                   id: "colorTabs",
                   className: "",
-                  type: "tabs",
+                  type: "tabs-dev",
                   tabs: [
                     {
+                      id: "tabText",
                       label: t("Text"),
                       options: [
                         toolbarColor2({
@@ -308,6 +337,28 @@ export function getItemsSimple({ v, device, state }) {
                           ]
                         }
                       ]
+                    },
+                    {
+                      id: "bg",
+                      label: t("Bg"),
+                      options: [
+                        {
+                          id: "menuBgColor",
+                          type: "colorPicker-dev",
+                          states: [NORMAL, HOVER]
+                        }
+                      ]
+                    },
+                    {
+                      id: "border",
+                      label: t("Border"),
+                      options: [
+                        {
+                          id: "menuBorder",
+                          type: "border-dev",
+                          states: [NORMAL, HOVER]
+                        }
+                      ]
                     }
                   ]
                 }
@@ -319,32 +370,38 @@ export function getItemsSimple({ v, device, state }) {
     },
     {
       id: "subMenuToolbarColor",
-      type: "popover",
-      devices: "desktop",
-      size: "auto",
-      title: t("Colors"),
-      position: 80,
-      icon: {
-        style: {
-          backgroundColor: hexToRgba(subMenuColorHex, v.subMenuColorOpacity)
+      type: "popover-dev",
+      config: {
+        size: "auto",
+        title: t("Colors"),
+        icon: {
+          style: {
+            backgroundColor: hexToRgba(subMenuColorHex, v.subMenuColorOpacity)
+          }
         }
       },
+      devices: "desktop",
+      position: 80,
       roles: ["admin"],
       options: [
         {
           id: "subMenuColor",
-          tabsPosition: "left",
-          type: "tabs",
+          type: "tabs-dev",
+          config: {
+            tabsPosition: "left"
+          },
           tabs: [
             {
-              tabIcon: "nc-circle",
+              id: "tabNormal",
+              icon: "nc-circle",
               title: t("Normal"),
               options: [
                 {
                   id: "subMenuColorTabs",
-                  type: "tabs",
+                  type: "tabs-dev",
                   tabs: [
                     {
+                      id: "text",
                       label: t("Text"),
                       options: [
                         toolbarColor2({
@@ -374,6 +431,7 @@ export function getItemsSimple({ v, device, state }) {
                       ]
                     },
                     {
+                      id: "tabBackground",
                       label: t("Bg"),
                       options: [
                         toolbarBgColor2({
@@ -406,6 +464,7 @@ export function getItemsSimple({ v, device, state }) {
                       ]
                     },
                     {
+                      id: "tabBorder",
                       label: t("Border"),
                       options: [
                         toolbarBorder2({
@@ -508,15 +567,17 @@ export function getItemsSimple({ v, device, state }) {
               ]
             },
             {
-              tabIcon: "nc-hover",
+              id: "tabHover",
+              icon: "nc-hover",
               title: t("Hover"),
               options: [
                 {
                   id: "subMenuHoverColorTabs",
                   className: "",
-                  type: "tabs",
+                  type: "tabs-dev",
                   tabs: [
                     {
+                      id: "tabText",
                       label: t("Text"),
                       options: [
                         toolbarColor2({
@@ -546,6 +607,7 @@ export function getItemsSimple({ v, device, state }) {
                       ]
                     },
                     {
+                      id: "tabBackground",
                       label: t("Background"),
                       options: [
                         toolbarBgColor2({
@@ -579,7 +641,6 @@ export function getItemsSimple({ v, device, state }) {
                         }
                       ]
                     },
-
                     {
                       id: "tabBoxShadow",
                       label: t("Shadow"),
@@ -649,95 +710,79 @@ export function getItemsSimple({ v, device, state }) {
           ]
         }
       ]
+    },
+    {
+      id: "advancedSettings",
+      type: "advancedSettings",
+      roles: ["admin"],
+      position: 110,
+      icon: "nc-cog",
+      title: t("Settings")
     }
-
-    // mMenu
   ];
 }
 
 export function getItemsMMenu({ v, device, state }) {
-  const dvk = key => defaultValueKey({ key, device });
   const dvv = key => defaultValueValue({ v, key, device, state });
-
   const { hex: mMenuColorHex } = getOptionColorHexByPalette(
-    defaultValueValue({ v, key: "mMenuColorHex", device }),
-    defaultValueValue({ v, key: "mMenuColorPalette", device })
+    dvv("mMenuColorHex"),
+    dvv("mMenuColorPalette")
   );
 
   return [
     {
       id: "mMenuToolbarMenuItem",
-      type: "popover",
-      icon: "nc-star",
-      title: t("Icon"),
+      type: "popover-dev",
+      config: {
+        icon: "nc-star",
+        title: t("Icon")
+      },
       position: 20,
       options: [
         {
-          id: dvk("mMenuIconSize"),
-          type: "slider",
+          id: "mMenuIconSize",
+          type: "slider-dev",
           label: t("Size"),
           roles: ["admin"],
           position: 20,
-          slider: {
+          config: {
             min: 0,
-            max: 100
-          },
-          input: {
-            show: true
-          },
-          suffix: {
-            show: true,
-            choices: [
+            max: 100,
+            units: [
               {
-                title: "px",
-                value: "px"
+                title: "%",
+                value: "%"
               }
             ]
-          },
-          value: {
-            value: dvv("mMenuIconSize")
-          },
-          onChange: ({ value }) => ({
-            [dvk("mMenuIconSize")]: value
-          })
+          }
         },
         {
-          id: dvk("mMenuIconSpacing"),
-          type: "slider",
+          id: "mMenuIconSpacing",
+          type: "slider-dev",
           label: t("Spacing"),
           roles: ["admin"],
           position: 30,
-          slider: {
+          config: {
             min: 0,
-            max: 100
-          },
-          input: {
-            show: true
-          },
-          suffix: {
-            show: true,
-            choices: [
+            max: 100,
+            units: [
               {
-                title: "px",
-                value: "px"
+                title: "%",
+                value: "%"
               }
             ]
-          },
-          value: {
-            value: dvv("mMenuIconSpacing")
-          },
-          onChange: ({ value }) => ({
-            [dvk("mMenuIconSpacing")]: value
-          })
+          }
         }
       ]
     },
     {
       id: "mMenuToolbarTypography",
-      type: "popover",
-      icon: "nc-font",
-      size: device === DESKTOP ? "large" : "auto",
-      title: t("Typography"),
+      type: "popover-dev",
+      config: {
+        icon: "nc-font",
+        title: t("Typography"),
+        size: device === DESKTOP ? "large" : "auto"
+      },
       roles: ["admin"],
       position: 70,
       options: [
@@ -752,32 +797,38 @@ export function getItemsMMenu({ v, device, state }) {
     },
     {
       id: "mMenuToolbarColor",
-      type: "popover",
-      size: "auto",
-      title: t("Colors"),
-      position: 80,
-      icon: {
-        style: {
-          backgroundColor: hexToRgba(mMenuColorHex, v.mMenuColorOpacity)
+      type: "popover-dev",
+      config: {
+        size: "auto",
+        title: t("Colors"),
+        icon: {
+          style: {
+            backgroundColor: hexToRgba(mMenuColorHex, v.mMenuColorOpacity)
+          }
         }
       },
+      position: 80,
       roles: ["admin"],
       options: [
         {
           id: "mMenuColor",
-          tabsPosition: "left",
-          type: "tabs",
+          type: "tabs-dev",
+          config: {
+            position: "left"
+          },
           tabs: [
             {
-              tabIcon: "nc-circle",
+              id: "tabNormal",
+              icon: "nc-circle",
               title: t("Normal"),
               options: [
                 {
                   id: "mMenuColorTabs",
                   className: "",
-                  type: "tabs",
+                  type: "tabs-dev",
                   tabs: [
                     {
+                      id: "tabText",
                       label: t("Text"),
                       options: [
                         toolbarColor2({
@@ -809,6 +860,7 @@ export function getItemsMMenu({ v, device, state }) {
                       ]
                     },
                     {
+                      id: "tabBackground",
                       label: t("Background"),
                       options: [
                         toolbarBgColor2({
@@ -841,6 +893,7 @@ export function getItemsMMenu({ v, device, state }) {
                       ]
                     },
                     {
+                      id: "tabBorder",
                       label: t("Border"),
                       options: [
                         toolbarBorder2({
@@ -877,15 +930,17 @@ export function getItemsMMenu({ v, device, state }) {
               ]
             },
             {
-              tabIcon: "nc-hover",
+              id: "tabHover",
+              icon: "nc-hover",
               title: t("Hover"),
               options: [
                 {
                   id: "mMenuColorTabs",
                   className: "",
-                  type: "tabs",
+                  type: "tabs-dev",
                   tabs: [
                     {
+                      id: "tabText",
                       label: t("Text"),
                       options: [
                         toolbarColor2({
@@ -913,10 +968,6 @@ export function getItemsMMenu({ v, device, state }) {
                           ]
                         }
                       ]
-                    },
-                    {
-                      id: "hiddenTab",
-                      options: []
                     }
                   ]
                 }

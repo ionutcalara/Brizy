@@ -12,6 +12,7 @@ import {
   styleMarginGroupedSuffix,
   styleMarginUngroupedSuffix
 } from "visual/utils/style2";
+import { cssStylePadding } from "visual/utils/cssStyle";
 
 const validation = k => k !== undefined;
 
@@ -64,10 +65,10 @@ export function cssStyleSectionPropertyHoverTransition() {
 }
 
 export function cssStyleSectionToolbarOffset({ v, device, state }) {
-  const toolbarSpacing = 44;
+  const toolbarSpacing = 42;
   const marginType = styleMarginType({ v, device, state });
-  let marginTop = 0;
-  let marginTopSuffix = "";
+  let marginTop;
+  let marginTopSuffix;
 
   if (marginType === "grouped") {
     marginTop = styleMarginGrouped({ v, device, state });
@@ -121,4 +122,17 @@ export function cssStyleSectionHeightStyle({ v, device }) {
       : "auto";
 
   return `min-height: ${minHeight};`;
+}
+
+export function cssStyleSectionPaddingsForEditorResize({ v, device, state }) {
+  if (IS_EDITOR) {
+    const {
+      paddingLeft,
+      paddingLeftSuffix,
+      paddingRight,
+      paddingRightSuffix
+    } = cssStylePadding({ v, device, state });
+
+    return `margin-left: -${paddingLeft}${paddingLeftSuffix}; margin-right: -${paddingRight}${paddingRightSuffix};`;
+  }
 }

@@ -19,7 +19,9 @@ const translationsMap = {
   Countdown2: t("Countdown"),
   Tabs: t("Tabs"),
   TimeLine: t("Timeline"),
+  BusinessHour: t("Business Hour"),
   Switcher: t("Switcher"),
+  Table: t("Table"),
   ProgressBar: t("Progress"),
   Accordion: t("Accordion"),
   ImageGallery: t("Gallery"),
@@ -28,11 +30,13 @@ const translationsMap = {
   Column: t("Column"),
   WPSidebar: t("Sidebar"),
   WPCustomShortcode: t("Shortcode"),
-  WPPostsTitle: t("Post Title"),
+  WPPostsTitle: v =>
+    v?.type === "woo" ? t("Woo Product Title") : t("Post Title"),
   WPNavigation: t("Menu"),
   WPPostExcerpt: t("Post Excerpt"),
-  Archives: t("Archives"),
+  WPPostNavigation: t("Post Navigation"),
   Posts: t("Posts"),
+  Archives: t("Archives"),
   Menu: t("Menu"),
   FacebookButton: t("Facebook Button"),
   FacebookComments: t("Comments"),
@@ -47,7 +51,12 @@ const translationsMap = {
   Twitter: t("Twitter"),
   Facebook: t("Facebook"),
   WPComments: t("Comments"),
-  Search: t("Search")
+  Search: t("Search"),
+  WOOProductMeta: t("Product Meta"),
+  WOORating: t("WOORating"),
+  WOOCart: t("WOOCart"),
+  Login: t("Login"),
+  Lottie: t("Lottie")
 };
 
 export default {
@@ -56,7 +65,6 @@ export default {
 
 function getItems(v) {
   const { base } = Editor.getShortcodes();
-
   const { icon = "" } =
     base.find(
       ({
@@ -67,12 +75,17 @@ function getItems(v) {
         }
       }) => type === v.items[0].type
     ) || {};
+  let title = translationsMap[v.items[0].type]; // TODO: See if we'll need icons & prop
+
+  if (typeof title === "function") {
+    title = title(v.items[0].value);
+  }
 
   return [
     {
       id: "main",
       type: "group",
-      title: translationsMap[v.items[0].type], // TODO: See if we'll need icons & prop
+      title,
       icon,
       items: []
     }

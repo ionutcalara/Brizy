@@ -1,10 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
+import { ThunkDispatch } from "redux-thunk";
 import _ from "underscore";
 import classnames from "classnames";
 import deepMerge from "deepmerge";
-import UIState from "visual/global/UIState";
 import EditorIcon from "visual/component/EditorIcon";
+import Prompts, { PromptsProps } from "visual/component/Prompts";
+import { Block } from "visual/types";
+import { ReduxState } from "visual/redux/types";
 import { hideToolbar } from "visual/component/Toolbar";
 import { SectionPopup2Instances } from "visual/editorComponents/SectionPopup2/instances";
 import { SectionPopupInstances } from "visual/editorComponents/SectionPopup/instances";
@@ -18,14 +21,13 @@ import {
 import { insertItem } from "visual/utils/models/insertItem";
 import {
   updateGlobalBlock,
-  ActionUpdateGlobalBlock,
   addFonts,
+  updateExtraFontStyles,
+  ActionUpdateGlobalBlock,
   ActionAddFonts,
-  AddFontsPayload
+  FontsPayload,
+  ActionUpdateExtraFontStyles
 } from "visual/redux/actions2";
-import { ReduxState } from "visual/redux/types";
-import { ThunkDispatch } from "redux-thunk";
-import { Block, SavedBlock, GlobalBlock } from "visual/types";
 
 const MAX_CONTAINER_WIDTH = 140;
 
@@ -53,7 +55,7 @@ type Props = StateProps & {
   dispatch: ThunkDispatch<
     ReduxState,
     null,
-    ActionAddFonts | ActionUpdateGlobalBlock
+    ActionAddFonts | ActionUpdateGlobalBlock | ActionUpdateExtraFontStyles
   >;
 } & OwnProps;
 
@@ -75,53 +77,23 @@ class PromptAddPopupOptionType extends React.Component<Props> {
   };
 
   handleCreate = (): void => {
-    UIState.set("prompt", {
+    const data: PromptsProps = {
       prompt: "blocks",
-      tabs: {
-        templates: false // this disables the "Pages" tab
-      },
-      tabProps: {
-        blocks: {
-          showSidebar: false,
-          showCategories: false,
-          showType: false,
-          showSearch: false,
-          type: "popups",
-          onAddBlocks: this.handleAddBlocks
-        },
-        saved: {
-          showSearch: false,
-          blocksFilter: (
-            blocks: [string, SavedBlock][]
-          ): [string, SavedBlock][] => {
-            return blocks.filter(
-              // eslint-disable-next-line @typescript-eslint/no-unused-vars
-              ([_, { data: blockData }]) =>
-                blockData.type === "SectionPopup" ||
-                blockData.type === "SectionPopup2"
-            );
-          },
-          onAddBlocks: this.handleAddBlocks
-        },
-        global: {
-          showSearch: false,
-          blocksFilter: (
-            blocks: [string, GlobalBlock][]
-          ): [string, GlobalBlock][] => {
-            return blocks.filter(
-              // eslint-disable-next-line @typescript-eslint/no-unused-vars
-              ([_, { data: blockData }]) =>
-                blockData.type === "SectionPopup" ||
-                blockData.type === "SectionPopup2"
-            );
-          },
-          onAddBlocks: this.handleAddBlocks
-        }
+      mode: "single",
+      props: {
+        type: "popup",
+        showTemplate: false,
+        blocksType: false,
+        globalSearch: false,
+        onChangeBlocks: this.handleAddBlocks,
+        onChangeGlobal: this.handleAddBlocks,
+        onChangeSaved: this.handleAddSavedBlock
       }
-    });
+    };
+    Prompts.open(data);
   };
 
-  handleAddBlocks = (data: { block: Block; fonts: AddFontsPayload }): void => {
+  handleAddBlocks = (data: { block: Block; fonts: FontsPayload }): void => {
     const {
       value: { popups },
       globalBlocks,
@@ -145,8 +117,8 @@ class PromptAddPopupOptionType extends React.Component<Props> {
         }
       });
     } else {
-      const globalBlockId = blockData.value.globalBlockId;
-      const globalBlock = globalBlocks[globalBlockId].data;
+      const { _id } = blockData.value;
+      const globalBlock = globalBlocks[_id].data;
 
       if (globalBlock.value.popupId) {
         popupId = globalBlock.value.popupId;
@@ -156,7 +128,7 @@ class PromptAddPopupOptionType extends React.Component<Props> {
 
         dispatch(
           updateGlobalBlock({
-            id: globalBlockId,
+            id: _id,
             data: deepMerge(globalBlock, {
               value: {
                 popupId
@@ -169,6 +141,39 @@ class PromptAddPopupOptionType extends React.Component<Props> {
           })
         );
       }
+    }
+
+    onChange({
+      value: popupId,
+      popups: insertItem(popups, popups.length, blockData)
+    });
+  };
+
+  handleAddSavedBlock = (data: {
+    blocks: Block[];
+    fonts: FontsPayload;
+    extraFontStyles?: Array<{ id: string }>;
+  }): void => {
+    const { fonts, blocks, extraFontStyles = [] } = data;
+    const {
+      value: { popups },
+      dispatch,
+      onChange
+    } = this.props;
+
+    const popupId = uuid();
+    const blockData = deepMerge(blocks[0], {
+      value: {
+        _blockVisibility: "unlisted",
+        popupId
+      }
+    });
+
+    if (fonts) {
+      dispatch(addFonts(fonts));
+    }
+    if (extraFontStyles.length) {
+      dispatch(updateExtraFontStyles(extraFontStyles));
     }
 
     onChange({
@@ -202,8 +207,8 @@ class PromptAddPopupOptionType extends React.Component<Props> {
         if (item.type !== "GlobalBlock") {
           return item.value.popupId !== value;
         } else {
-          const globalBlockId = item.value.globalBlockId;
-          const globalBlock = globalBlocks[globalBlockId].data;
+          const { _id } = item.value;
+          const globalBlock = globalBlocks[_id].data;
 
           return globalBlock ? globalBlock.value.popupId !== value : true;
         }
@@ -222,7 +227,7 @@ class PromptAddPopupOptionType extends React.Component<Props> {
     // try to find in value.popups (non legacy)
     block = popups.find(block => {
       if (block.type === "GlobalBlock") {
-        block = globalBlocks[block.value.globalBlockId].data;
+        block = globalBlocks[block.value._id].data;
       }
 
       return block.value.popupId === value;

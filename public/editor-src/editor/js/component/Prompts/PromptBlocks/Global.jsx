@@ -1,34 +1,55 @@
 import React, { Component, Fragment } from "react";
+import T from "prop-types";
 import { connect } from "react-redux";
 import _ from "underscore";
 import Scrollbars from "react-custom-scrollbars";
 import SearchInput from "./common/SearchInput";
 import ThumbnailGrid from "./common/ThumbnailGrid";
+import Tooltip from "visual/component/Controls/Tooltip";
 import { assetUrl } from "visual/utils/asset";
 import { blockThumbnailData } from "visual/utils/blocks";
 import {
-  fontSelector,
+  blocksOrderSelector,
   globalBlocksAssembledSelector
 } from "visual/redux/selectors";
+import { fontSelector } from "visual/redux/selectors2";
 import { deleteGlobalBlock } from "visual/redux/actions";
 import {
-  getUsedModelsFonts,
-  getBlocksStylesFonts
+  getBlocksStylesFonts,
+  getUsedModelsFonts
 } from "visual/utils/traverse";
 import { t } from "visual/utils/i18n";
 import { normalizeFonts } from "visual/utils/fonts";
 
 class Global extends Component {
   static defaultProps = {
+    type: "normal",
     showSearch: true,
-    blocksFilter: globalBlock => globalBlock,
     onAddBlocks: _.noop,
-    onClose: _.noop
+    onClose: _.noop,
+    HeaderSlotLeft: _.noop
+  };
+
+  static propTypes = {
+    type: T.oneOf(["normal", "popup", "conditionPopup"]),
+    showSearch: T.bool,
+    showSidebar: T.bool,
+    onAddBlocks: T.func,
+    onClose: T.func,
+    HeaderSlotLeft: T.func
   };
 
   state = {
     search: ""
   };
+
+  getBlocks() {
+    const { type, globalBlocks } = this.props;
+
+    return Object.values(globalBlocks).filter(
+      ({ data, meta = {} }) => !data.deleted && meta.type === type
+    );
+  }
 
   handleThumbnailAdd = async thumbnailData => {
     const { globalBlocks, projectFonts, onAddBlocks, onClose } = this.props;
@@ -81,7 +102,25 @@ class Global extends Component {
   }
 
   renderEmpty() {
-    const { HeaderSlotLeft, showSearch } = this.props;
+    const { HeaderSlotLeft, showSearch, type } = this.props;
+    let gifUrl;
+    let message = t("Nothing here yet, make a global block first.");
+
+    switch (type) {
+      case "popup": {
+        gifUrl = "editor/img/global_popups_toolbar.gif";
+        message = t("Nothing here yet, make a global popup first.");
+        break;
+      }
+      case "conditionPopup": {
+        gifUrl = "editor/img/global_condition_popups_toolbar.gif";
+        message = t("Nothing here yet, make a global popup first.");
+        break;
+      }
+      default: {
+        gifUrl = "editor/img/global_toolbar.gif";
+      }
+    }
 
     return (
       <Fragment>
@@ -103,12 +142,10 @@ class Global extends Component {
             ) : (
               <Fragment>
                 <p className="brz-ed-popup-two-blocks__grid-clear-text">
-                  {t("Nothing here yet, make a global block first.")}
+                  {message}
                 </p>
                 <img
-                  src={`${assetUrl(
-                    "editor/img/global_toolbar.gif"
-                  )}?${Math.random()}`}
+                  src={`${assetUrl(gifUrl)}?${Math.random()}`}
                   className="brz-ed-popup-two-blocks__grid-clear-image-global"
                   alt="Global"
                 />
@@ -120,41 +157,67 @@ class Global extends Component {
     );
   }
 
-  render() {
-    const { globalBlocks, blocksFilter } = this.props;
-    const thumbnails = blocksFilter(Object.entries(globalBlocks)).reduce(
-      (acc, [globalBlockId, block]) => {
-        if (block.data.deleted) {
-          return acc;
-        }
-
-        const { url, width, height } = blockThumbnailData(block.data);
-        const thumbnailData = {
-          id: globalBlockId,
-          thumbnailSrc: url,
-          thumbnailWidth: width,
-          thumbnailHeight: height,
-          showRemoveIcon: true,
-          resolve: {
-            type: "GlobalBlock",
-            blockId: block.data.blockId,
-            value: { globalBlockId }
-          }
-        };
-
-        acc.push(thumbnailData);
-
-        return acc;
-      },
-      []
+  renderProInfo() {
+    return (
+      <div className="brz-ed-tooltip-content__pro">
+        <p className="brz-p brz-ed-tooltip-content__pro-title">
+          {t("This block is already on the page.")}
+        </p>
+      </div>
     );
-    return thumbnails.length > 0
-      ? this.renderThumbnails(thumbnails)
-      : this.renderEmpty();
+  }
+
+  renderThumbnailTooltip(content) {
+    return (
+      <Tooltip
+        className="brz-ed-global-tooltip"
+        overlayClassName="brz-ed-tooltip--delay-1"
+        size="small"
+        offset="5"
+        openOnClick={false}
+        overlay={this.renderProInfo()}
+      >
+        {content}
+      </Tooltip>
+    );
+  }
+
+  render() {
+    const { blocksOrder } = this.props;
+    const blocks = this.getBlocks();
+
+    if (blocks.length === 0) {
+      return this.renderEmpty();
+    }
+
+    const thumbnails = blocks.map(block => {
+      const { url, width, height } = blockThumbnailData(block.data);
+      const { id: _id } = block;
+
+      const inactive = blocksOrder.includes(_id);
+
+      return {
+        id: _id,
+        thumbnailSrc: url,
+        thumbnailWidth: width,
+        thumbnailHeight: height,
+        showRemoveIcon: true,
+        renderWrapper: content =>
+          inactive ? this.renderThumbnailTooltip(content) : content,
+        inactive,
+        resolve: {
+          type: "GlobalBlock",
+          value: { _id }
+        }
+      };
+    }, []);
+
+    return this.renderThumbnails(thumbnails);
   }
 }
 
 const mapStateToProps = state => ({
+  blocksOrder: blocksOrderSelector(state),
   globalBlocks: globalBlocksAssembledSelector(state),
   projectFonts: fontSelector(state)
 });

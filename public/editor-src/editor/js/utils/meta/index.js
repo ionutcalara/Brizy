@@ -3,5 +3,7 @@ export {
   getContainerW,
   getMargin,
   getBorder,
-  getPadding
+  getPadding,
+  getContainerWForTable,
+  getBorderTable
 } from "./containersSize";

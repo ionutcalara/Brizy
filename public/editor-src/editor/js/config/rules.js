@@ -5,10 +5,19 @@ export default {
   "wrapper--form2": {
     showToolbar: "on"
   },
+  "wrapper--login": {
+    showToolbar: "on"
+  },
   "wrapper--tabs": {
     showToolbar: "on"
   },
   "wrapper--timeline": {
+    showToolbar: "on"
+  },
+  "wrapper--business-hour": {
+    showToolbar: "on"
+  },
+  "wrapper--table": {
     showToolbar: "on"
   },
   "wrapper--accordion": {
@@ -109,6 +118,9 @@ export default {
       "<p class='brz-text-lg-center brz-tp-paragraph'><span class='brz-cp-color7'><span data-population='brizy_dc_post_excerpt'>#Post Excerpt</span></span></p>"
   },
   "wrapper--facebookComments": {
+    showToolbar: "on"
+  },
+  "wrapper--WOOCart": {
     showToolbar: "on"
   }
 };

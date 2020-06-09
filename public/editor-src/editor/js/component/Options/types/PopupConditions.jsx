@@ -1,12 +1,14 @@
 import React from "react";
 import _ from "underscore";
 import classNames from "classnames";
+import Prompts from "visual/component/Prompts";
 import { t } from "visual/utils/i18n";
-import UIState from "visual/global/UIState";
 import { getStore } from "visual/redux/store";
+import { getRulesList } from "visual/utils/api/editor";
 import { IS_EXTERNAL_POPUP } from "visual/utils/models";
 
 import { rulesAmountSelector, triggersSelector } from "visual/redux/selectors";
+import { updatePopupRules } from "visual/redux/actions";
 
 class PopupConditionsOptionType extends React.Component {
   static defaultProps = {
@@ -32,6 +34,10 @@ class PopupConditionsOptionType extends React.Component {
     return rulesAmount + triggersLength;
   }
 
+  handleChangeRules = data => {
+    getStore().dispatch(updatePopupRules(data));
+  };
+
   handleMouseDown = () => {
     let options = [
       {
@@ -49,13 +55,16 @@ class PopupConditionsOptionType extends React.Component {
         type: "rules",
         icon: "nc-eye-17",
         label: t("Conditions"),
-        title: t("WHERE DO YOU WANT TO DISPLAY IT?")
+        title: t("WHERE DO YOU WANT TO DISPLAY IT?"),
+        asyncGetValue: getRulesList,
+        onChange: this.handleChangeRules
       });
     }
 
-    UIState.set("prompt", {
+    Prompts.open({
       prompt: "conditions",
-      options
+      mode: "single",
+      props: { options }
     });
   };
 
