@@ -451,12 +451,13 @@ class BlockApiCest {
 
 
 		$newMeta = '{"_thumbnailSrc": "1","_thumbnailWidth": "1"}';
-		$I->sendAjaxPostRequest( 'wp-admin/admin-ajax.php?' . build_query( [ 'action' => 'brizy-update-global-blocks', 'version'=>BRIZY_EDITOR_VERSION ] ), [
+		$I->sendAjaxPostRequest( 'wp-admin/admin-ajax.php?' . build_query( [ 'action' => 'brizy-update-global-blocks' ] ), [
 			'uid'         => [ $uid ],
 			'data'        => [ $newBlockData ],
 			'meta'        => [ $newMeta ],
 			'position'    => [ json_encode( $newPosition ) ],
 			'is_autosave' => [ 1 ],
+			'version'     => [ BRIZY_EDITOR_VERSION ],
 			'dataVersion' => [ 1 ],
 			'status'      => [ 'publish' ],
 		] );
