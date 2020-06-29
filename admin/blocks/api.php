@@ -290,18 +290,6 @@ class Brizy_Admin_Blocks_Api extends Brizy_Admin_AbstractApi {
 
 			foreach ( $this->param( 'uid' ) as $i => $uid ) {
 
-				$version = $this->param( 'version' )[$i];
-				if ( $version !== BRIZY_EDITOR_VERSION ) {
-					Brizy_Logger::instance()->critical( 'Request with invalid version',
-						[
-							'editorVersion'   => BRIZY_EDITOR_VERSION,
-							'providedVersion' => $version
-						] );
-
-					$this->error( 400, "Invalid editor version. Please refresh the page and try again" );
-				}
-
-
 				if ( ! $this->param( 'uid' )[ $i ] ) {
 					$this->error( '400', 'Invalid uid' );
 				}
