@@ -800,6 +800,7 @@ class Brizy_Editor_Editor_Editor {
 			'setFeaturedImageFocalPoint' => $pref . Brizy_Editor_API::AJAX_SET_IMAGE_FOCAL_PT,
 			'removeFeaturedImage'        => $pref . Brizy_Editor_API::AJAX_REMOVE_FEATURED_IMAGE,
             'getUsers'                   => $pref . Brizy_Editor_API::AJAX_GET_USERS,
+            'getTermsBy'                 => $pref . Brizy_Editor_API::AJAX_GET_TERMS_BY,
 			'getForm'                    => $pref . Brizy_Editor_Forms_Api::AJAX_GET_FORM,
 			'createForm'                 => $pref . Brizy_Editor_Forms_Api::AJAX_CREATE_FORM,
 			'updateForm'                 => $pref . Brizy_Editor_Forms_Api::AJAX_UPDATE_FORM,
