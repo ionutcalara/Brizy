@@ -3,12 +3,14 @@ import classnames from "classnames";
 import EditorIcon from "visual/component/EditorIcon";
 import { t } from "visual/utils/i18n";
 
+const validate = v => v !== null && v !== undefined;
+
 export function List(props) {
   const { lists = [], counters = {}, value = "", onChange = () => {} } = props;
 
   return lists.map(
     ({ id, title, icon }) =>
-      counters[id] > 0 && (
+      validate(counters[id]) && (
         <div
           key={id}
           // usually t is called with a string literal.
@@ -31,9 +33,11 @@ export function List(props) {
           <span className="brz-span brz-ed-popup-two-sidebar-list__span-new">
             new
           </span>
-          <span className="brz-span brz-ed-popup-two-sidebar-list__span-quantity">
-            {counters[id]}
-          </span>
+          {!!counters[id] && (
+            <span className="brz-span brz-ed-popup-two-sidebar-list__span-quantity">
+              {counters[id]}
+            </span>
+          )}
         </div>
       )
   );

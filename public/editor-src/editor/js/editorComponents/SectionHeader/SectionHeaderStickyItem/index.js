@@ -1,5 +1,6 @@
 import React from "react";
 import classnames from "classnames";
+import _ from "underscore";
 import EditorComponent from "visual/editorComponents/EditorComponent";
 import CustomCSS from "visual/component/CustomCSS";
 import SectionHeaderStickyItemItems from "./Items";
@@ -14,7 +15,6 @@ import {
   wInFullPage
 } from "visual/config/columns";
 import { CollapsibleToolbar, ToolbarExtend } from "visual/component/Toolbar";
-import { getStore } from "visual/redux/store";
 import * as toolbarConfig from "./toolbar";
 import * as sidebarConfig from "./sidebar";
 import { styleBg, styleContainer, styleContainerWrap } from "./styles";
@@ -26,7 +26,7 @@ import {
 } from "visual/utils/style2";
 import { getContainerW } from "visual/utils/meta";
 
-class SectionHeaderStickyItem extends EditorComponent {
+export default class SectionHeaderStickyItem extends EditorComponent {
   static get componentId() {
     return "SectionHeaderStickyItem";
   }
@@ -41,36 +41,18 @@ class SectionHeaderStickyItem extends EditorComponent {
 
   collapsibleToolbarRef = React.createRef();
 
-  shouldMetaUpdate(nextProps) {
-    const {
-      meta: {
-        section: { showOnDesktop, showOnMobile, showOnTablet }
-      }
-    } = this.props;
-    const {
-      meta: {
-        section: {
-          showOnDesktop: newShowOnDesktop,
-          showOnMobile: newShowOnMobile,
-          showOnTablet: newShowOnTablet
-        }
-      }
-    } = nextProps;
-    const { deviceMode } = getStore().getState().ui;
-
-    return (
-      (deviceMode === "desktop" && showOnDesktop !== newShowOnDesktop) ||
-      (deviceMode === "mobile" && showOnMobile !== newShowOnMobile) ||
-      (deviceMode === "tablet" && showOnTablet !== newShowOnTablet)
-    );
-  }
-
   componentDidMount() {
     this.mounted = true;
   }
 
   shouldComponentUpdate(nextProps) {
-    return this.shouldMetaUpdate(nextProps) || this.optionalSCU(nextProps);
+    return (
+      this.optionalSCU(nextProps) || this.shouldUpdateBecauseOfParent(nextProps)
+    );
+  }
+
+  shouldUpdateBecauseOfParent(nextProps) {
+    return !_.isEqual(this.props.rerender, nextProps.rerender);
   }
 
   componentWillUnmount() {
@@ -212,5 +194,3 @@ class SectionHeaderStickyItem extends EditorComponent {
     );
   }
 }
-
-export default SectionHeaderStickyItem;

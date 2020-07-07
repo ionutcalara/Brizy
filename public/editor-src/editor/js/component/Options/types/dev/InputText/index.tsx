@@ -29,7 +29,7 @@ export const InputText: Component = ({
       className={className}
       onChange={setValue}
       value={_value}
-      size={config.size ?? "large"}
+      size={config.size ?? "auto"}
       placeholder={placeholder}
     />
   );
