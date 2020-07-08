@@ -67,7 +67,9 @@ function removeUnwantedNodes(node) {
     { type: "className", value: "brz-ed-wrapper__toolbar" },
     { type: "className", value: "brz-form__select-list" },
     { type: "className", value: "brz-popup2__button-go-to-editor" },
-    { type: "className", value: "brz-ed-icon-svg" }
+    { type: "className", value: "brz-ed-icon-svg" },
+    { type: "className", value: "brz-ed-slider__spinner" },
+    { type: "className", value: "brz-ed-portal__loading" }
   ];
 
   /* eslint-disable no-unused-vars */
@@ -243,13 +245,11 @@ async function inlineImages(node, config) {
       return;
     }
 
-    /* eslint-disable no-useless-escape */
-    const urlRegex = /(url\("?'?([^\"')]+)"?'?\))/;
-    /* eslint-enabled no-useless-escape */
+    const urlRegex = /url\(["']?([^#"')]+)["']?\)/;
     const urlMatch = urlRegex.exec(style);
-    const [, url, src] = urlMatch || [];
+    const [, src] = urlMatch || [];
 
-    if (url && src && !isBase64(src)) {
+    if (src && !isBase64(src)) {
       promises.push(
         fetchResource(getResourceDownloadUrl(src, config)).then(base64 => {
           node.setAttribute(

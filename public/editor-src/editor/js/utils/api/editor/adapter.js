@@ -1,8 +1,8 @@
+import { IS_WP } from "visual/utils/models";
 import {
   ProjectError,
   PageError,
-  GlobalBlocksError,
-  SavedBlocksError
+  GlobalBlocksError
 } from "visual/utils/errors";
 
 // project
@@ -32,7 +32,6 @@ export const stringifyProject = project => {
 // page
 
 export const parsePage = page => {
-  const id = String(page.id);
   let data;
 
   if (!page.data) {
@@ -45,7 +44,7 @@ export const parsePage = page => {
     }
   }
 
-  return { ...page, id, data };
+  return { ...page, id: page.id, data };
 };
 
 export const stringifyPage = page => {
@@ -58,6 +57,9 @@ export const stringifyPage = page => {
 
 export const parseGlobalBlock = globalBlock => {
   let data;
+  let meta;
+  let rules;
+  let position;
 
   if (!globalBlock.data) {
     throw new GlobalBlocksError("globalBlock data should exist");
@@ -71,36 +73,45 @@ export const parseGlobalBlock = globalBlock => {
     }
   }
 
-  return { ...globalBlock, data };
-};
-
-export const stringifyGlobalBlock = globalBlock => {
-  let data = JSON.stringify(globalBlock.data);
-
-  return { ...globalBlock, data };
-};
-
-// saved blocks
-export const parseSavedBlock = savedBlock => {
-  let data;
-
-  if (!savedBlock.data) {
-    throw new SavedBlocksError("savedBlock data should exist");
+  if (!globalBlock.meta) {
+    meta = {};
   } else {
     try {
-      data = JSON.parse(savedBlock.data);
+      meta = JSON.parse(globalBlock.meta);
     } catch (e) {
-      throw new SavedBlocksError(
-        `Failed to parse savedBlock data ${savedBlock.data}`
-      );
+      meta = {};
     }
   }
 
-  return { ...savedBlock, data };
+  if (!globalBlock.rules) {
+    rules = [];
+  } else {
+    try {
+      rules = IS_WP ? globalBlock.rules : JSON.parse(globalBlock.rules);
+    } catch (e) {
+      throw new GlobalBlocksError("globalBlock rules are wrong");
+    }
+  }
+
+  if (!globalBlock.position) {
+    position = {};
+  } else {
+    try {
+      position = IS_WP
+        ? globalBlock.position
+        : JSON.parse(globalBlock.position);
+    } catch (e) {
+      throw new GlobalBlocksError("globalBlock position are wrong");
+    }
+  }
+
+  return { ...globalBlock, data, meta, position, rules };
 };
 
-export const stringifySavedBlock = savedBlock => {
-  let data = JSON.stringify(savedBlock.data);
+export const stringifyGlobalBlock = globalBlock => {
+  const data = JSON.stringify(globalBlock.data);
+  const meta = JSON.stringify(globalBlock.meta);
+  const rules = JSON.stringify(globalBlock.rules);
 
-  return { ...savedBlock, data };
+  return { ...globalBlock, data, meta, rules };
 };
