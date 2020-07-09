@@ -42,21 +42,21 @@ export function getItems({ v, device }) {
   return [
     {
       id: "popoverCode",
-      type: "popover",
-      icon: "nc-iframe",
-      size: "large",
-      title: t("Embed"),
-      roles: ["admin"],
+      type: "popover-dev",
+      config: {
+        icon: "nc-iframe",
+        size: "large",
+        title: t("Embed")
+      },
       devices: "desktop",
       position: 90,
       disabled: TARGET === "WP" ? false : !isApproved,
       options: [
         {
           id: "code",
-          type: "textarea",
+          type: "textarea-dev",
           devices: "desktop",
-          placeholder: t("Paste your code here..."),
-          value: v.code
+          placeholder: t("Paste your code here...")
         }
       ]
     },
@@ -82,20 +82,22 @@ export function getItems({ v, device }) {
     },
     {
       id: "popoverColor",
-      type: "popover",
-      size: "auto",
-      title: t("Colors"),
-      devices: "desktop",
-      position: 90,
-      icon: {
-        style: {
-          backgroundColor: hexToRgba(borderColorHex, v.borderColorOpacity)
+      type: "popover-dev",
+      config: {
+        size: "auto",
+        title: t("Colors"),
+        icon: {
+          style: {
+            backgroundColor: hexToRgba(borderColorHex, v.borderColorOpacity)
+          }
         }
       },
+      devices: "desktop",
+      position: 90,
       options: [
         {
           id: "tabsColor",
-          type: "tabs",
+          type: "tabs-dev",
           tabs: [
             {
               id: "tabBorder",
@@ -125,10 +127,11 @@ export function getItems({ v, device }) {
     },
     {
       id: "toolbarSettings",
-      type: "popover",
-      icon: "nc-cog",
-      title: t("Settings"),
-      roles: ["admin"],
+      type: "popover-dev",
+      config: {
+        icon: "nc-cog",
+        title: t("Settings")
+      },
       position: 110,
       options: [
         {
@@ -137,8 +140,11 @@ export function getItems({ v, device }) {
           type: "slider-dev",
           config: {
             min: 1,
-            max: 100,
-            units: [{ value: "%", title: "%" }]
+            max: dvv("widthSuffix") === "px" ? 1000 : 100,
+            units: [
+              { value: "px", title: "px" },
+              { value: "%", title: "%" }
+            ]
           }
         },
         {

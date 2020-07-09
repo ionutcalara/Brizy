@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import _ from "underscore";
 import classnames from "classnames";
 import MouseEventsDelayed from "./MouseEventsDelayed";
-import Draggable from "visual/component/Draggable";
+import { DraggableDiv } from "visual/component/DraggableDiv";
 import { rolesHOC } from "visual/component/Roles";
 
 class PaddingResizerHandle extends Component {
@@ -96,7 +96,7 @@ class PaddingResizerHandle extends Component {
         onLeave={this.handleMouseLeave}
         onLeaveSuccess={this.handleMouseLeaveSuccess}
       >
-        <Draggable
+        <DraggableDiv
           className={className}
           draggingCursor="ns-resize"
           onDragStart={this.handleDragStart}
@@ -112,7 +112,7 @@ class PaddingResizerHandle extends Component {
           <span className="brz-ed-draggable__padding--value brz-ed-draggable__padding--mobile-value">
             {mobileValue}
           </span>
-        </Draggable>
+        </DraggableDiv>
       </MouseEventsDelayed>
     );
   }
